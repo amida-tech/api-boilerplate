@@ -1,3 +1,4 @@
+import httpStatus from 'http-status';
 import db from '../../config/sequelize';
 
 const User = db.User;
@@ -8,6 +9,11 @@ const User = db.User;
 function load(req, res, next, id) {
     User.findById(id)
         .then((user) => {
+            if (!user) {
+                const e = new Error('User does not exist');
+                e.status = httpStatus.NOT_FOUND;
+                return next(e);
+            }
             req.user = user; // eslint-disable-line no-param-reassign
             return next();
         })
@@ -31,7 +37,6 @@ function get(req, res) {
 function create(req, res, next) {
     const user = User.build({
         username: req.body.username,
-        mobileNumber: req.body.mobileNumber,
     });
 
     user.save()
@@ -74,8 +79,9 @@ function list(req, res, next) {
  */
 function remove(req, res, next) {
     const user = req.user;
+    const username = req.user.username;
     user.destroy()
-        .then(deletedUser => res.json(deletedUser))
+        .then(() => res.json(username))
         .catch(e => next(e));
 }
 
