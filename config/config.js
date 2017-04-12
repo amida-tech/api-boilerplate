@@ -5,40 +5,39 @@ require('dotenv').config();
 
 // define validation for all the env vars
 const envVarsSchema = Joi.object({
-  NODE_ENV: Joi.string()
-    .allow(['development', 'production', 'test', 'provision'])
-    .default('development'),
-  PORT: Joi.number()
-    .default(4040),
-  MONGOOSE_DEBUG: Joi.boolean()
-    .when('NODE_ENV', {
-      is: Joi.string().equal('development'),
-      then: Joi.boolean().default(true),
-      otherwise: Joi.boolean().default(false)
-    }),
-  JWT_SECRET: Joi.string().required()
-    .description('JWT Secret required to sign'),
-  MONGO_HOST: Joi.string().required()
-    .description('Mongo DB host url'),
-  MONGO_PORT: Joi.number()
-    .default(27017)
+    NODE_ENV: Joi.string()
+        .allow(['development', 'production', 'test', 'provision'])
+        .default('development'),
+    PORT: Joi.number()
+        .default(4000),
+    JWT_SECRET: Joi.string().required()
+        .description('JWT Secret required to sign'),
+    PG_DB: Joi.string().required()
+        .description('Postgres database name'),
+    PG_PORT: Joi.number()
+        .default(5432),
+    PG_USER: Joi.string().required()
+        .description('Postgres username'),
+    PG_PASSWD: Joi.string().allow('')
+        .description('Postgres password'),
 }).unknown()
-  .required();
+    .required();
 
 const { error, value: envVars } = Joi.validate(process.env, envVarsSchema);
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+    throw new Error(`Config validation error: ${error.message}`);
 }
 
 const config = {
-  env: envVars.NODE_ENV,
-  port: envVars.PORT,
-  mongooseDebug: envVars.MONGOOSE_DEBUG,
-  jwtSecret: envVars.JWT_SECRET,
-  mongo: {
-    host: envVars.MONGO_HOST,
-    port: envVars.MONGO_PORT
-  }
+    env: envVars.NODE_ENV,
+    port: envVars.PORT,
+    jwtSecret: envVars.JWT_SECRET,
+    postgres: {
+        db: envVars.PG_DB,
+        port: envVars.PG_PORT,
+        user: envVars.PG_USER,
+        passwd: envVars.PG_PASSWD,
+    },
 };
 
 export default config;
