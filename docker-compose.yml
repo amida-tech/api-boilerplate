@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  express-mongoose-es6-rest-api:
+  amida-api:
     build:
       context: .
     volumes:
@@ -16,7 +16,7 @@ services:
 
     # Expose ports [HOST:CONTAINER}
     ports:
-      - "4040:4040"
+      - "4000:4000"
 
     # Set environment variables from this file
     env_file:
@@ -24,15 +24,23 @@ services:
 
     # Overwrite any env var defined in .env file (if required)
     environment:
-      - MONGO_HOST=mongodb://mongo/express-mongoose-es6-rest-api-development
-      - DEBUG=express-mongoose-es6-rest-api:*
+      - PG_DB=api
+      - PG_PORT=5432
+      - PG_HOST=postgres
+      - PG_USER=api
+      - PG_PASSWD=boilerplate
+      - DEBUG=amida-api-boilerplate:*
 
     # Link to containers in another service.
     # Links also express dependency between services in the same way as depends_on,
     # so they determine the order of service startup.
     links:
-      - mongo
-  mongo:
-    image: "mongo:3.4.2"
+      - postgres
+
+  postgres:
+    image: "postgres:9.4.11"
     ports:
-      - "27017:27017"
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=api
+      - POSTGRES_PASSWORD=boilerplate
