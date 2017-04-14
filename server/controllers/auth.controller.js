@@ -22,6 +22,7 @@ function login(req, res, next) {
     if (req.body.username === user.username && req.body.password === user.password) {
         const token = jwt.sign({
             username: user.username,
+            expiresIn: 3600,
         }, config.jwtSecret);
         return res.json({
             token,
