@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs '6.10.0'
+        jenkins.plugins.nodejs.tools.NodeJSInstallation '6.10.0'
     }
     stages {
         stage('Checkout') {
