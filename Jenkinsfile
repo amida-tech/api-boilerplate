@@ -10,14 +10,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                cp .env.example .env
-                yarn build
+                sh 'cp .env.example .env'
+                sh 'yarn build'
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing...'
-                yarn test
+                sh 'yarn test'
             }
         }
         stage('Deploy') {
