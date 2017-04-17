@@ -3,7 +3,9 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            git branch: 'master', url: 'git@github.com:amida-tech/api-boilerplate.git'
+            steps {
+                checkout scm
+            }
         }
         stage('Build') {
             steps {
