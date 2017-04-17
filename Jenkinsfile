@@ -11,6 +11,8 @@ pipeline {
             steps {
                 echo 'Building...'
                 sh 'cp .env.example .env'
+                sh 'node -v'
+                sh 'yarn'
                 sh 'yarn build'
             }
         }
