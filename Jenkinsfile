@@ -1,12 +1,11 @@
 pipeline {
     agent any
-    
-    def nodeHome = tool name: '6.10.0', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
-    env.PATH = "${nodeHome}/bin:${env.PATH}"
 
     stages {
         stage('Checkout') {
             steps {
+                def nodeHome = tool name: '6.10.0', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+                env.PATH = "${nodeHome}/bin:${env.PATH}"
                 checkout scm
             }
         }
