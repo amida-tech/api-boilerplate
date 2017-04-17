@@ -1,8 +1,9 @@
 pipeline {
     agent any
-    tools {
-        jenkins.plugins.nodejs.tools.NodeJSInstallation '6.10.0'
-    }
+    
+    def nodeHome = tool name: '6.10.0', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+    env.PATH = "${nodeHome}/bin:${env.PATH}"
+
     stages {
         stage('Checkout') {
             steps {
