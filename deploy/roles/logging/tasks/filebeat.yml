@@ -1,0 +1,45 @@
+---
+- name: logging | filebeat | install package
+  yum:
+    name: filebeat
+    state: latest
+
+- name: logging | filebeat | copy config file
+  template:
+    src: filebeat.yml
+    dest: /etc/filebeat/filebeat.yml
+
+- name: logging | filebeat | checking for presence of nginx
+  stat:
+    path: /etc/nginx/nginx.conf
+  register: nginx_conf
+
+- name: logging | filebeat | configuring nginx log
+  lineinfile:
+    dest: /etc/nginx/nginx.conf
+    regexp: 'http_x_forwarded_for'
+    line: "'\"$http_user_agent\" \"$http_x_forwarded_for\" $request_time\';"
+  notify:
+    - restart nginx
+  when: nginx_conf.stat.exists == True
+
+- name: logging | filebeat | enable on startup
+  service:
+    name: filebeat
+    enabled: yes
+    state: started
+
+# hostname changes from a packer builder instance to an AMI-launched
+# instance. to get beat to update the hostname on first launch, it must
+# be loaded after cloud-final updates the hostname.
+- name: logging | filebeat | update systemd Requires
+  lineinfile:
+    dest: /etc/systemd/system/multi-user.target.wants/filebeat.service
+    regexp: Requires
+    line: Requires=cloud-final.service
+
+- name: logging | filebeat | update systemd After
+  lineinfile:
+    dest: /etc/systemd/system/multi-user.target.wants/filebeat.service
+    regexp: After
+    line: After=network-online.target cloud-final.service

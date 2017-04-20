@@ -1,0 +1,19 @@
+---
+- name: Make source folder
+  file: path={{ src_dir }} state=directory
+
+- name: Move API code to correct location
+  command: mv /tmp/dist {{ src_dir }}
+
+- name: Install api npm packages
+  command: chdir={{ src_dir }}/dist npm install -s
+
+- name: Copy systemd service
+  sudo: yes
+  template:
+    src: express.service.j2
+    dest: /etc/systemd/system/express.service
+
+- name: Enable api service
+  sudo: yes
+  service: name=express state=started enabled=yes

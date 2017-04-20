@@ -1,0 +1,20 @@
+[Unit]
+Description=Express
+
+[Service]
+# Start the js-file starting the express server
+ExecStart={{ src_dir }}/dist/node_modules/.bin/gulp serve
+WorkingDirectory={{ src_dir }}/dist
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=Express
+# Change to a non-root user (optional, but recommended)
+#User=<alternate user>
+#Group=<alternate group>
+# Set environment options
+Environment=NODE_ENV=development PORT=4000
+
+[Install]
+WantedBy=multi-user.target

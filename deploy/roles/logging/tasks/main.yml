@@ -1,0 +1,36 @@
+---
+- name: logging | import repo gpg key
+  rpm_key:
+    state: present
+    key: http://packages.elastic.co/GPG-KEY-elasticsearch
+
+- name: logging | set up repo
+  yum_repository:
+    name: beats
+    description: Elastic Beats Repository
+    baseurl: https://artifacts.elastic.co/packages/5.x/yum
+    enabled: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    gpgcheck: yes
+
+# beat doesn't support intermediate certs so this is needed
+# to make letsencrypt work
+- name: logging | copy ssl cert script
+  template:
+    src: logging_ssl_cert.sh
+    dest: /usr/local/bin/logging_ssl_cert.sh
+
+- name: logging | run ssl cert script
+  command: sh /usr/local/bin/logging_ssl_cert.sh
+
+- include: metricbeat.yml
+
+- include: filebeat.yml
+
+- name: logging | set up pm2 log clearing cronjob
+  cron:
+    name: "clear pm2 logs older than 3 days"
+    minute: 0
+    hour: 3
+    job: "find /home/centos/.pm2/logs/* -mtime +3 -exec rm -f {} \\;"
+    user: centos

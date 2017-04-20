@@ -1,0 +1,48 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "rds_host": "",
+    "rds_password": "",
+    "build_env": "",
+    "ami_name": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-west-2",
+    "source_ami": "ami-d2c924b2",
+    "instance_type": "t2.medium",
+    "ssh_username": "centos",
+    "ami_name": "{{user `ami_name`}}-{{user `build_env`}} {{timestamp}}",
+    "ssh_private_ip": false,
+    "associate_public_ip_address": true,
+    "ssh_pty" : true,
+    "security_group_id": "sg-dff3bcb9"
+  }],
+  "provisioners": [{
+    "type": "file",
+    "source": "./dist",
+    "destination": "/tmp"
+  },{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "sudo yum -y install epel-release",
+      "sudo yum -y install ansible git",
+      "sudo yum clean all"
+    ]
+  },{
+    "type": "ansible-local",
+    "playbook_file": "./deploy/playbook.yml",
+    "role_paths": [
+      "./deploy/roles/nodejs",
+      "./deploy/roles/api",
+      "./deploy/roles/repo-epel",
+      "./deploy/roles/logging",
+      "./deploy/roles/nginx"
+    ],
+    "extra_arguments": "-vv --extra-vars \"db_host={{user `rds_host`}} db_password={{user `rds_password`}} node_env={{user `build_env`}}\""
+  }]
+}

@@ -124,3 +124,10 @@ Docker Compose:
 ```sh
 docker-compose up
 ```
+
+## AWS Deployment
+The basic steps for deploying to AWS are:
+1. Run the Packer script, `template.json`
+2. Run the Terraform script.
+
+Further details can be found in the `deploy` directory.

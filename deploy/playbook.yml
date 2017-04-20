@@ -1,0 +1,43 @@
+---
+- hosts: all
+  roles:
+    - role: repo-epel
+      sudo: true
+    - role: nodejs
+    - role: nginx
+      sudo: true
+    - role: api
+    - role: logging
+      sudo: true
+  vars:
+    node_version: 6.10.0
+    postgresql_users:
+      - name: api
+        pass: ''
+        encrypted: no
+    postgresql_databases:
+      - name: api
+        owner: api
+    postgresql_version: 9.5
+
+    nginx_vhosts:
+      - listen: "80 default_server"
+        server_name: "_"
+        extra_parameters: |
+          location / {
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-NginX-Proxy true;
+            proxy_pass http://api;
+            proxy_redirect off;
+            proxy_cache STATIC;
+            proxy_cache_valid 200 1d;
+            proxy_cache_use_stale  error timeout invalid_header updating http_500 http_502 http_503 http_504;
+          }
+    nginx_upstreams:
+      - name: api
+        servers:
+          - '127.0.0.1:4000'
+        keepalive: 8
+    nginx_proxy_cache_path: '/var/cache/nginx levels=1:2 keys_zone=STATIC:10m inactive=24h max_size=1g'

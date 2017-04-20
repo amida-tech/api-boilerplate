@@ -1,0 +1,30 @@
+---
+#file: roles/node/tasks/main.yml
+
+- name: Install NVM
+  sudo: yes
+  command: git clone https://github.com/creationix/nvm.git /.nvm
+
+- name: Add NVM to bashrc
+  sudo: yes
+  shell: "echo '. /.nvm/nvm.sh' >> /etc/bash.bashrc"
+
+- name: Get proper version of node
+  sudo: yes
+  shell: ". /.nvm/nvm.sh && nvm install {{ node_version }} && nvm use {{ node_version }} && nvm alias default {{ node_version }}"
+
+- name: Link node
+  sudo: yes
+  file: src=/.nvm/versions/node/v{{ node_version }}/bin/node dest=/usr/bin/node state=link
+
+- name: Link node local
+  sudo: yes
+  file: src=/.nvm/versions/node/v{{ node_version }}/bin/node dest=/usr/local/bin/node state=link
+
+- name: Link npm
+  sudo: yes
+  file: src=/.nvm/versions/node/v{{ node_version }}/bin/npm dest=/usr/bin/npm state=link
+
+- name: Link npm local
+  sudo: yes
+  file: src=/.nvm/versions/node/v{{ node_version }}/bin/npm dest=/usr/local/bin/npm state=link

@@ -1,0 +1,10 @@
+/home/centos/.pm2/pm2.log /home/centos/.pm2/logs/* {
+        rotate 12
+        weekly
+        missingok
+        notifempty
+        compress
+        delaycompress
+        copytruncate
+        create 0640 centos centos
+}

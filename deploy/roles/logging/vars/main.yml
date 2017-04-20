@@ -1,0 +1,3 @@
+---
+logstash_host: logs.amida-tech.com
+service_name: datascope-backend

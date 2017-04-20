@@ -1,0 +1,5 @@
+- name: repo-epel
+  src: geerlingguy.repo-epel
+
+- name: nginx
+  src: geerlingguy.nginx

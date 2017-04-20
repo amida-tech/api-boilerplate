@@ -1,0 +1,31 @@
+---
+- name: logging | metricbeat | install package
+  yum:
+    name: metricbeat
+    state: latest
+
+- name: logging | metricbeat | copy config file
+  template:
+    src: metricbeat.yml
+    dest: /etc/metricbeat/metricbeat.yml
+
+- name: logging | metricbeat | enable on startup
+  service:
+    name: metricbeat
+    enabled: yes
+    state: started
+
+# hostname changes from a packer builder instance to an AMI-launched
+# instance. to get beat to update the hostname on first launch, it must
+# be loaded after cloud-final updates the hostname.
+- name: logging | metricbeat | update systemd Requires
+  lineinfile:
+    dest: /etc/systemd/system/multi-user.target.wants/metricbeat.service
+    regexp: Requires
+    line: Requires=cloud-final.service
+
+- name: logging | metricbeat | update systemd After
+  lineinfile:
+    dest: /etc/systemd/system/multi-user.target.wants/metricbeat.service
+    regexp: After
+    line: After=network-online.target cloud-final.service
