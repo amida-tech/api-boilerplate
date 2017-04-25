@@ -9,7 +9,7 @@ data "aws_ami" "api" {
 
   filter {
     name   = "name"
-    values = ["api-${var.build_env}*"]
+    values = ["api-boilerplate-${var.build_env}*"]
   }
 
   owners = ["844297601570"]
