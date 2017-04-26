@@ -19,7 +19,7 @@ resource "aws_launch_configuration" "launch_config" {
   image_id        = "${data.aws_ami.api.id}"
   instance_type   = "${var.instance_type}"
   key_name        = "${var.key_name}"
-  security_groups = ["${aws_security_group.api_sg.name}"]
+  security_groups = ["${aws_security_group.api_sg.id}"]
   name            = "api-${var.build_env}-${data.aws_ami.api.id}"
 
   root_block_device {
@@ -123,7 +123,7 @@ resource "aws_autoscaling_group" "main_asg" {
 resource "aws_elb" "api_lb" {
   name               = "api-boilerplate-lb"
   availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
-  security_groups    = ["${aws_security_group.api_sg.name}"]
+  security_groups    = ["${aws_security_group.api_sg.id}"]
 
   listener {
     instance_port     = 80
@@ -133,23 +133,11 @@ resource "aws_elb" "api_lb" {
   }
 
   # listener {
-
-
   #   instance_port      = 81
-
-
   #   instance_protocol  = "http"
-
-
   #   lb_port            = 443
-
-
   #   lb_protocol        = "https"
-
-
   #   ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
-
-
   # }
 
   health_check {
@@ -159,6 +147,7 @@ resource "aws_elb" "api_lb" {
     target              = "HTTP:80/api/health-check"
     interval            = 15
   }
+
   cross_zone_load_balancing = true
   idle_timeout              = 60
 }
