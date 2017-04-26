@@ -20,7 +20,6 @@ resource "aws_launch_configuration" "launch_config" {
   instance_type   = "${var.instance_type}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.api_sg.id}"]
-  name            = "api-${var.build_env}-${data.aws_ami.api.id}"
 
   root_block_device {
     delete_on_termination = true
