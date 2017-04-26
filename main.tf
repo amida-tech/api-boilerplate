@@ -19,7 +19,7 @@ resource "aws_launch_configuration" "launch_config" {
   image_id        = "${data.aws_ami.api.id}"
   instance_type   = "${var.instance_type}"
   key_name        = "${var.key_name}"
-  security_groups = ["${var.security_group}"]
+  security_groups = ["${aws_security_group.api_sg.name}"]
   name            = "api-${var.build_env}-${data.aws_ami.api.id}"
 
   root_block_device {
@@ -30,6 +30,53 @@ resource "aws_launch_configuration" "launch_config" {
 
   lifecycle {
     create_before_destroy = true
+  }
+}
+
+resource "aws_security_group" "api_sg" {
+  name        = "api-boilerplate-security-group"
+  description = "SG for API boilerplate deployment"
+
+  ingress {
+    from_port   = 0
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 0
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 0
+    to_port     = 81
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 0
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "tcp"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -52,7 +99,7 @@ resource "aws_autoscaling_group" "main_asg" {
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "${var.health_check_type}"
 
-  load_balancers = ["${split(",", var.load_balancer_names)}"]
+  load_balancers = ["${aws_elb.api_lb.name}"]
 
   wait_for_elb_capacity = "${var.asg_minimum_number_of_instances}"
 
@@ -71,6 +118,49 @@ resource "aws_autoscaling_group" "main_asg" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_elb" "api_lb" {
+  name               = "api-boilerplate-lb"
+  availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  security_groups    = ["${aws_security_group.api_sg.name}"]
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+
+  # listener {
+
+
+  #   instance_port      = 81
+
+
+  #   instance_protocol  = "http"
+
+
+  #   lb_port            = 443
+
+
+  #   lb_protocol        = "https"
+
+
+  #   ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
+
+
+  # }
+
+  health_check {
+    healthy_threshold   = 4
+    unhealthy_threshold = 2
+    timeout             = 10
+    target              = "HTTP:80/api/health-check"
+    interval            = 15
+  }
+  cross_zone_load_balancing = true
+  idle_timeout              = 60
 }
 
 resource "aws_autoscaling_policy" "scale_up" {
@@ -139,10 +229,6 @@ variable "key_name" {
   description = "The SSH public key name (in EC2 key-pairs) to be injected into instances"
 }
 
-variable "security_group" {
-  description = "ID of SG the launched instance will use"
-}
-
 variable "asg_maximum_number_of_instances" {
   description = "The maximum number of instances the ASG should maintain"
 }
@@ -157,10 +243,6 @@ variable "health_check_grace_period" {
 
 variable "health_check_type" {
   description = "The health check used by the ASG to determine health"
-}
-
-variable "load_balancer_names" {
-  description = "A comma seperated list string of ELB names the ASG should associate instances with"
 }
 
 variable "availability_zones" {
