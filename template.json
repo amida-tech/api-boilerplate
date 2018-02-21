@@ -19,7 +19,8 @@
     "ssh_private_ip": false,
     "associate_public_ip_address": true,
     "ssh_pty" : true,
-    "security_group_id": "sg-dff3bcb9"
+    "security_group_id": "sg-dff3bcb9",
+    "shutdown_behavior": "terminate"
   }],
   "provisioners": [{
     "type": "file",
@@ -29,6 +30,14 @@
     "type": "shell",
     "inline": [
       "sleep 30",
+      "sudo yum -y install at",
+      "sudo systemctl start atd",
+      "sudo sh -c \"echo 'Instance shutting down in 10 minutes' | at 'now + 50 minutes'\"",
+      "sudo sh -c \"echo halt | at 'now + 60 minutes'\""
+    ]
+  },{
+    "type": "shell",
+    "inline": [
       "sudo yum -y install epel-release",
       "sudo yum -y install ansible git",
       "sudo yum clean all"
