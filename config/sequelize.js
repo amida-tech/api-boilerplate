@@ -23,7 +23,7 @@ fs.readdirSync(modelsDir)
     .filter(file => (file.indexOf('.') !== 0) && (file.indexOf('.map') === -1))
     // import model files and save model names
     .forEach((file) => {
-        console.log(`Loading model file ${file}`);
+        console.log(`Loading model file ${file}`); // eslint-disable-line no-
         const model = sequelize.import(path.join(modelsDir, file));
         db[model.name] = model;
     });
@@ -32,8 +32,8 @@ fs.readdirSync(modelsDir)
 sequelize
     .sync()
     .then((err) => {
-        if (err) console.log('An error occured %j', err);
-        else console.log('Database synchronized');
+        if (err) console.log('An error occured %j', err); // eslint-disable-line no-
+        else console.log('Database synchronized'); // eslint-disable-line no-
     });
 
 // assign the sequelize variables to the db object and returning the db.
