@@ -18,16 +18,48 @@
         "lint:watch": "yarn lint -- --watch",
         "beautify": "es-beautifier -u -c .eslintrc.js *.js server config",
         "precommit": "yarn lint && yarn test",
-        "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
-        "test:watch": "yarn test -- --watch",
-        "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
+
+        "test": "cross-env NODE_ENV=test ./node_modules/.bin/jest server/tests",
+
+        "test:watch": "jest --watch",
+
+        "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _jest -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
+
         "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
         "report-coverage": "coveralls < ./coverage/lcov.info"
     },
+    "keywords": [
+       "express",
+       "node",
+       "node.js",
+       "mongodb",
+       "mongoose",
+       "es6",
+       "jest",
+       "istanbul",
+       "REST",
+       "API",
+       "boilerplate"
+   ],
+   "jest": {
+       "automock": false,
+       "bail": false,
+       "verbose": false,
+       "setupFiles": [],
+       "testMatch": [
+           "**/Tests/**/*.js",
+           "**/?(*.)(spec|test|integration).js?(x)"
+       ],
+       "testPathIgnorePatterns": [
+           "/node_modules/",
+           "/coverage/",
+           "/dist/"
+       ],
+       "testEnvironment": "node"
+   },
     "dependencies": {
         "bluebird": "3.4.6",
         "body-parser": "1.15.2",
-        "chai": "^3.4.1",
         "compression": "1.6.2",
         "cookie-parser": "1.4.3",
         "cors": "2.8.1",
@@ -75,7 +107,8 @@
         "gulp-util": "^3.0.7",
         "husky": "^0.13.1",
         "istanbul": "1.1.0-alpha.1",
-        "mocha": "3.2.0",
+        "jest": "23.4.2",
+        "jsdom": "11.12.0",
         "validate-commit-msg": "^2.6.1"
     },
     "babel": {
@@ -85,6 +118,10 @@
         ],
         "plugins": [
             "add-module-exports"
+        ],
+        "ignore": [
+            "build/yarn/**/*.js",
+            "build/nodejs/**/*.js"
         ]
     }
 }

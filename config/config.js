@@ -14,6 +14,8 @@ const envVarsSchema = Joi.object({
         .description('JWT Secret required to sign'),
     PG_DB: Joi.string().required()
         .description('Postgres database name'),
+    PG_TEST_DB: Joi.string().required()
+        .description('Postgres database for tests'),
     PG_PORT: Joi.number()
         .default(5432),
     PG_HOST: Joi.string()
@@ -30,12 +32,15 @@ if (error) {
     throw new Error(`Config validation error: ${error.message}`);
 }
 
+// if test, use test database
+const isTestEnvironment = envVars.NODE_ENV === 'test';
+
 const config = {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
     jwtSecret: envVars.JWT_SECRET,
     postgres: {
-        db: envVars.PG_DB,
+        db: isTestEnvironment ? envVars.PG_TEST_DB : envVars.PG_DB,
         port: envVars.PG_PORT,
         host: envVars.PG_HOST,
         user: envVars.PG_USER,
