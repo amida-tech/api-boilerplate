@@ -40,7 +40,7 @@ describe('## Auth APIs', () => {
                 .then((res) => {
                     expect(res.body).toHaveProperty('token');
                     jwt.verify(res.body.token, config.jwtSecret, (err, decoded) => {
-                        expect(!err); // eslint-disable-line no-unused-expressions
+                        expect(!err);
                         expect(decoded.username).toEqual(validUserCredentials.username);
                         jwtToken = `Bearer ${res.body.token}`;
                         done();
