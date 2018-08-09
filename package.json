@@ -14,17 +14,15 @@
         "start": "gulp serve",
         "start:debug": "cross-env DEBUG=amida-api-boilerplate:* yarn start",
         "build": "gulp",
+        "copy": "gulp copy",
+        "babel": "gulp babel",
         "lint": "esw *.js server config --color",
         "lint:watch": "yarn lint -- --watch",
         "beautify": "es-beautifier -u -c .eslintrc.js *.js server config",
         "precommit": "yarn lint && yarn test",
-
         "test": "cross-env NODE_ENV=test ./node_modules/.bin/jest server/tests",
-
         "test:watch": "jest --watch",
-
         "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _jest -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
-
         "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
         "report-coverage": "coveralls < ./coverage/lcov.info"
     },
