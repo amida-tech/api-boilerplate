@@ -10,19 +10,26 @@ const envVarsSchema = Joi.object({
         .default('development'),
     PORT: Joi.number()
         .default(4000),
+    API_VERSION: Joi.string()
+        .default('1.0')
+        .description('API Version'),
     JWT_SECRET: Joi.string().required()
         .description('JWT Secret required to sign'),
-    PG_DB: Joi.string().required()
+    PG_DB: Joi.string()
+        .default('api')
         .description('Postgres database name'),
-    PG_TEST_DB: Joi.string().required()
+    PG_TEST_DB: Joi.string()
+        .default('api-test')
         .description('Postgres database for tests'),
     PG_PORT: Joi.number()
         .default(5432),
     PG_HOST: Joi.string()
         .default('localhost'),
     PG_USER: Joi.string().required()
+        .default('postgres')
         .description('Postgres username'),
     PG_PASSWD: Joi.string().allow('')
+        .default('password')
         .description('Postgres password'),
 }).unknown()
     .required();
@@ -38,6 +45,7 @@ const isTestEnvironment = envVars.NODE_ENV === 'test';
 const config = {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
+    apiVersion: envVars.API_VERSION,
     jwtSecret: envVars.JWT_SECRET,
     postgres: {
         db: isTestEnvironment ? envVars.PG_TEST_DB : envVars.PG_DB,

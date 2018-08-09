@@ -49,3 +49,8 @@ node_modules
 
 # .env
 .env
+
+# Gradle ignores for using a gradle build
+.gradle
+build/nodejs
+build/yarn
