@@ -3,12 +3,15 @@
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
 import app from '../../index';
+import config from '../../config/config';
+
+const apiVersionPath = `/api/v${config.apiVersion}`;
 
 describe('## Misc', () => {
-    describe('# GET /api/health-check', () => {
+    describe(`# GET ${apiVersionPath}/health-check`, () => {
         test('should return OK', (done) => {
             request(app)
-                .get('/api/health-check')
+                .get(`${apiVersionPath}/health-check`)
                 .expect(httpStatus.OK)
                 .then((res) => {
                     expect(res.text).toEqual('OK');
@@ -18,10 +21,10 @@ describe('## Misc', () => {
         });
     });
 
-    describe('# GET /api/404', () => {
+    describe(`# GET ${apiVersionPath}/404`, () => {
         test('should return 404 status', (done) => {
             request(app)
-                .get('/api/404')
+                .get(`${apiVersionPath}/404`)
                 .expect(httpStatus.NOT_FOUND)
                 .then((res) => {
                     expect(res.body.message).toEqual('Not Found');
@@ -34,7 +37,7 @@ describe('## Misc', () => {
     describe('# Error Handling', () => {
         test('should handle express validation error - username is required', (done) => {
             request(app)
-                .post('/api/users')
+                .post(`${apiVersionPath}/users`)
                 .send({
                     mobileNumber: '1234567890',
                 })

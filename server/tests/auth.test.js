@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import app from '../../index';
 import config from '../../config/config';
 
+const apiVersionPath = `/api/v${config.apiVersion}`;
+
 describe('## Auth APIs', () => {
     const validUserCredentials = {
         username: 'react',
@@ -19,10 +21,10 @@ describe('## Auth APIs', () => {
 
     let jwtToken;
 
-    describe('# POST /api/auth/login', () => {
+    describe(`# POST ${apiVersionPath}/auth/login`, () => {
         test('should return Authentication error', (done) => {
             request(app)
-                .post('/api/auth/login')
+                .post(`${apiVersionPath}/auth/login`)
                 .send(invalidUserCredentials)
                 .expect(httpStatus.UNAUTHORIZED)
                 .then((res) => {
@@ -34,7 +36,7 @@ describe('## Auth APIs', () => {
 
         test('should get valid JWT token', (done) => {
             request(app)
-                .post('/api/auth/login')
+                .post(`${apiVersionPath}/auth/login`)
                 .send(validUserCredentials)
                 .expect(httpStatus.OK)
                 .then((res) => {
@@ -50,10 +52,10 @@ describe('## Auth APIs', () => {
         });
     });
 
-    describe('# GET /api/auth/random-number', () => {
+    describe(`# GET ${apiVersionPath}/auth/random-number`, () => {
         test('should fail to get random number because of missing Authorization', (done) => {
             request(app)
-                .get('/api/auth/random-number')
+                .get(`${apiVersionPath}/auth/random-number`)
                 .expect(httpStatus.UNAUTHORIZED)
                 .then((res) => {
                     expect(res.body.message).toEqual('Unauthorized');
@@ -64,7 +66,7 @@ describe('## Auth APIs', () => {
 
         test('should fail to get random number because of wrong token', (done) => {
             request(app)
-                .get('/api/auth/random-number')
+                .get(`${apiVersionPath}/auth/random-number`)
                 .set('Authorization', 'Bearer inValidToken')
                 .expect(httpStatus.UNAUTHORIZED)
                 .then((res) => {
@@ -76,7 +78,7 @@ describe('## Auth APIs', () => {
 
         test('should get a random number', (done) => {
             request(app)
-                .get('/api/auth/random-number')
+                .get(`${apiVersionPath}/auth/random-number`)
                 .set('Authorization', jwtToken)
                 .expect(httpStatus.OK)
                 .then((res) => {
