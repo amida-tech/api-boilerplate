@@ -31,6 +31,11 @@ const envVarsSchema = Joi.object({
     UNIQUE_NAME_PG_PASSWD: Joi.string().allow('')
         .default('password')
         .description('Postgres password'),
+    UNIQUE_NAME_PG_SSL: Joi.bool()
+        .default(false)
+        .description('Enable SSL connection to PostgreSQL'),
+    UNIQUE_NAME_PG_CERT_CA: Joi.string()
+        .description('SSL certificate CA'), // Certificate itself, not a filename
 }).unknown()
     .required();
 
@@ -53,6 +58,8 @@ const config = {
         host: envVars.UNIQUE_NAME_PG_HOST,
         user: envVars.UNIQUE_NAME_PG_USER,
         passwd: envVars.UNIQUE_NAME_PG_PASSWD,
+        ssl: envVars.UNIQUE_NAME_PG_SSL,
+        ssl_ca_cert: envVars.UNIQUE_NAME_PG_CERT_CA,
     },
 };
 

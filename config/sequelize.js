@@ -7,23 +7,34 @@ import config from './config';
 const db = {};
 
 // connect to postgres testDb
+const sequelizeOptions = {
+    dialect: 'postgres',
+    port: config.postgres.port,
+    host: config.postgres.host,
+    // NOTE: https://github.com/sequelize/sequelize/issues/8417
+    // Codebase shouldn't be using string-based operators, but we still disable them
+    operatorsAliases: false,
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000,
+    },
+};
+if (config.postgres.ssl) {
+    sequelizeOptions.ssl = config.postgres.ssl;
+    if (config.postgres.ssl_ca_cert) {
+        sequelizeOptions.dialectOptions = {
+            ssl: {
+                ca: config.postgres.ssl_ca_cert,
+            },
+        };
+    }
+}
 const sequelize = new Sequelize(
     config.postgres.db,
     config.postgres.user,
     config.postgres.passwd,
-    {
-        dialect: 'postgres',
-        port: config.postgres.port,
-        host: config.postgres.host,
-        // NOTE: https://github.com/sequelize/sequelize/issues/8417
-        // Codebase shouldn't be using string-based operators, but we still disable them
-        operatorsAliases: false,
-        pool: {
-            max: 5,
-            min: 0,
-            idle: 10000,
-        },
-    }
+    sequelizeOptions
 );
 
 const modelsDir = path.normalize(`${__dirname}/../server/models`);
