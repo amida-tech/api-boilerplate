@@ -41,9 +41,11 @@ fs.readdirSync(modelsDir)
 // Synchronizing any model changes with database.
 sequelize
     .sync()
-    .then((err) => {
-        if (err) console.log('An error occured %j', err); // eslint-disable-line no-console
-        else console.log('Database synchronized'); // eslint-disable-line no-console
+    .then(() => {
+        console.log('Database synchronized'); // eslint-disable-line no-console
+    })
+    .catch((error) => {
+        if (error) console.log('An error occured %j', error); // eslint-disable-line no-console
     });
 
 // assign the sequelize variables to the db object and returning the db.
