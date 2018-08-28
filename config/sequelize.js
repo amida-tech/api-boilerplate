@@ -19,17 +19,17 @@ const sequelizeOptions = {
         min: 0,
         idle: 10000,
     },
-};
-if (config.postgres.ssl) {
-    sequelizeOptions.ssl = config.postgres.ssl;
-    if (config.postgres.ssl_ca_cert) {
-        sequelizeOptions.dialectOptions = {
+    ...(config.postgres.ssl && {
+        ssl: config.postgres.ssl,
+    }),
+    ...(config.postgres.ssl && config.postgres.ssl_ca_cert && {
+        dialectOptions: {
             ssl: {
                 ca: config.postgres.ssl_ca_cert,
             },
-        };
-    }
-}
+        },
+    }),
+};
 const sequelize = new Sequelize(
     config.postgres.db,
     config.postgres.user,
