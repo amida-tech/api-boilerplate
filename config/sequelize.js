@@ -6,15 +6,36 @@ import config from './config';
 
 const db = {};
 
-// connect to postgres db
-const sequelize = new Sequelize(config.postgres.db,
-                                config.postgres.user,
-                                config.postgres.passwd,
-    {
-        dialect: 'postgres',
-        port: config.postgres.port,
-        host: config.postgres.host,
-    });
+// connect to postgres testDb
+const sequelizeOptions = {
+    dialect: 'postgres',
+    port: config.postgres.port,
+    host: config.postgres.host,
+    // NOTE: https://github.com/sequelize/sequelize/issues/8417
+    // Codebase shouldn't be using string-based operators, but we still disable them
+    operatorsAliases: false,
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000,
+    },
+    ...(config.postgres.ssl && {
+        ssl: config.postgres.ssl,
+    }),
+    ...(config.postgres.ssl && config.postgres.ssl_ca_cert && {
+        dialectOptions: {
+            ssl: {
+                ca: config.postgres.ssl_ca_cert,
+            },
+        },
+    }),
+};
+const sequelize = new Sequelize(
+    config.postgres.db,
+    config.postgres.user,
+    config.postgres.passwd,
+    sequelizeOptions
+);
 
 const modelsDir = path.normalize(`${__dirname}/../server/models`);
 
@@ -23,7 +44,7 @@ fs.readdirSync(modelsDir)
     .filter(file => (file.indexOf('.') !== 0) && (file.indexOf('.map') === -1))
     // import model files and save model names
     .forEach((file) => {
-        console.log(`Loading model file ${file}`);
+        console.log(`Loading model file ${file}`); // eslint-disable-line no-console
         const model = sequelize.import(path.join(modelsDir, file));
         db[model.name] = model;
     });
@@ -31,9 +52,11 @@ fs.readdirSync(modelsDir)
 // Synchronizing any model changes with database.
 sequelize
     .sync()
-    .then((err) => {
-        if (err) console.log('An error occured %j', err);
-        else console.log('Database synchronized');
+    .then(() => {
+        console.log('Database synchronized'); // eslint-disable-line no-console
+    })
+    .catch((error) => {
+        if (error) console.log('An error occured %j', error); // eslint-disable-line no-console
     });
 
 // assign the sequelize variables to the db object and returning the db.

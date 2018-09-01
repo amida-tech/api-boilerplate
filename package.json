@@ -1,91 +1,127 @@
 {
-  "name": "amida-api-boilerplate",
-  "version": "0.1.0",
-  "description": "A Boilerplate application for building REST APIs",
-  "author": "Jacob Sachs <jacob@amida-tech.com>",
-  "main": "index.js",
-  "private": false,
-  "engines": {
-    "node": ">=6.9.1",
-    "npm": ">=2.15.11",
-    "yarn": ">=0.20.3"
-  },
-  "scripts": {
-    "start": "gulp serve",
-    "start:debug": "cross-env DEBUG=amida-api-boilerplate:* yarn start",
-    "build": "gulp",
-    "lint": "esw *.js server config --color",
-    "lint:watch": "yarn lint -- --watch",
-    "beautify": "es-beautifier -u -c .eslintrc.js *.js server config",
-    "precommit": "yarn lint && yarn test",
-    "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
-    "test:watch": "yarn test -- --watch",
-    "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
-    "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
-    "report-coverage": "coveralls < ./coverage/lcov.info"
-  },
-  "dependencies": {
-    "bluebird": "3.4.6",
-    "body-parser": "1.15.2",
-    "chai": "^3.4.1",
-    "compression": "1.6.2",
-    "cookie-parser": "1.4.3",
-    "cors": "2.8.1",
-    "debug": "^2.4.5",
-    "del": "^2.2.0",
-    "dotenv": "^4.0.0",
-    "express": "4.14.0",
-    "express-jwt": "5.1.0",
-    "express-validation": "1.0.1",
-    "express-winston": "2.1.2",
-    "gulp": "3.9.1",
-    "gulp-load-plugins": "^1.2.0",
-    "helmet": "3.1.0",
-    "http-status": "^0.2.0",
-    "joi": "10.0.6",
-    "jsonwebtoken": "7.1.9",
-    "lodash": "4.17.4",
-    "method-override": "^2.3.5",
-    "morgan": "1.7.0",
-    "pg": "6.1.5",
-    "pg-hstore": "2.3.2",
-    "run-sequence": "^1.1.5",
-    "sequelize": "3.30.4",
-    "supertest": "2.0.1",
-    "supertest-as-promised": "4.0.2",
-    "winston": "2.3.0"
-  },
-  "devDependencies": {
-    "babel-cli": "6.18.0",
-    "babel-core": "6.18.0",
-    "babel-plugin-add-module-exports": "0.2.1",
-    "babel-preset-es2015": "6.16.0",
-    "babel-preset-stage-2": "6.18.0",
-    
-    "commitizen": "^2.9.2",
-    "coveralls": "^2.11.6",
-    "cross-env": "3.1.3",
-    "eslint": "3.16.1",
-    "eslint-config-airbnb-base": "7.1.0",
-    "eslint-plugin-import": "1.16.0",
-    "eslint-watch": "2.1.14",
-    "gulp-babel": "6.1.2",   
-    "gulp-newer": "^1.1.0",
-    "gulp-nodemon": "^2.0.6",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-util": "^3.0.7",
-    "husky": "^0.13.1",
-    "istanbul": "1.1.0-alpha.1",
-    "mocha": "3.2.0",
-    "validate-commit-msg": "^2.6.1"
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-2"
+    "name": "amida-api-boilerplate",
+    "version": "0.2.0",
+    "description": "A Boilerplate application for building REST APIs",
+    "author": "Jacob Sachs <jacob@amida-tech.com>",
+    "main": "index.js",
+    "private": false,
+    "engines": {
+        "node": ">=8.10.0",
+        "npm": ">=5.6.0",
+        "yarn": ">=1.5.1"
+    },
+    "scripts": {
+        "start": "gulp serve",
+        "start:debug": "cross-env DEBUG=amida-api-boilerplate:* yarn start",
+        "build": "gulp",
+        "copy": "gulp copy",
+        "babel": "gulp babel",
+        "lint": "esw *.js server config --color",
+        "lint:watch": "yarn lint -- --watch",
+        "beautify": "es-beautifier -u -c .eslintrc.js *.js server config",
+        "precommit": "yarn lint && yarn test",
+        "test": "cross-env NODE_ENV=test ./node_modules/.bin/jest server/tests",
+        "test:watch": "jest --watch",
+        "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _jest -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
+        "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
+        "report-coverage": "coveralls < ./coverage/lcov.info"
+    },
+    "keywords": [
+        "express",
+        "node",
+        "node.js",
+        "mongodb",
+        "mongoose",
+        "es6",
+        "jest",
+        "istanbul",
+        "REST",
+        "API",
+        "boilerplate"
     ],
-    "plugins": [
-      "add-module-exports"
-    ]
-  }
+    "jest": {
+        "automock": false,
+        "bail": false,
+        "verbose": false,
+        "setupFiles": [],
+        "testMatch": [
+            "**/Tests/**/*.js",
+            "**/?(*.)(spec|test|integration).js?(x)"
+        ],
+        "testPathIgnorePatterns": [
+            "/node_modules/",
+            "/coverage/",
+            "/dist/"
+        ],
+        "testEnvironment": "node"
+    },
+    "dependencies": {
+        "bluebird": "3.4.6",
+        "body-parser": "1.15.2",
+        "compression": "1.6.2",
+        "cookie-parser": "1.4.3",
+        "cors": "2.8.1",
+        "debug": "^2.4.5",
+        "del": "^2.2.0",
+        "dotenv": "^4.0.0",
+        "express": "4.14.0",
+        "express-jwt": "5.1.0",
+        "express-validation": "1.0.1",
+        "express-winston": "2.1.2",
+        "gulp": "3.9.1",
+        "gulp-load-plugins": "^1.2.0",
+        "helmet": "3.1.0",
+        "http-status": "^0.2.0",
+        "joi": "10.0.6",
+        "jsonwebtoken": "7.1.9",
+        "lodash": "4.17.10",
+        "method-override": "^2.3.5",
+        "morgan": "1.7.0",
+        "pg": "7.4.3",
+        "pg-hstore": "2.3.2",
+        "run-sequence": "^1.1.5",
+        "sequelize": "4.38.0",
+        "supertest": "2.0.1",
+        "supertest-as-promised": "4.0.2",
+        "winston": "2.3.0"
+    },
+    "devDependencies": {
+        "babel-cli": "6.18.0",
+        "babel-core": "6.18.0",
+        "babel-plugin-add-module-exports": "0.2.1",
+        "babel-plugin-transform-object-rest-spread": "6.26.0",
+        "babel-preset-es2015": "6.16.0",
+        "babel-preset-stage-2": "6.18.0",
+        "commitizen": "^2.9.2",
+        "coveralls": "^2.11.6",
+        "cross-env": "3.1.3",
+        "eslint": "3.16.1",
+        "eslint-config-airbnb-base": "7.1.0",
+        "eslint-plugin-import": "1.16.0",
+        "eslint-watch": "2.1.14",
+        "gulp-babel": "6.1.2",
+        "gulp-newer": "^1.1.0",
+        "gulp-nodemon": "^2.0.6",
+        "gulp-sourcemaps": "^1.6.0",
+        "gulp-util": "^3.0.7",
+        "husky": "^0.13.1",
+        "istanbul": "1.1.0-alpha.1",
+        "jest": "23.4.2",
+        "jsdom": "11.12.0",
+        "validate-commit-msg": "^2.6.1"
+    },
+    "babel": {
+        "presets": [
+            "es2015",
+            "stage-2"
+        ],
+        "plugins": [
+            "add-module-exports",
+            "transform-object-rest-spread"
+        ],
+        "ignore": [
+            "build/yarn/**/*.js",
+            "build/nodejs/**/*.js"
+        ]
+    }
 }

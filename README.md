@@ -10,7 +10,7 @@ This is a boilerplate application for building REST APIs in Node.js using ES6 an
 |----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ES6 via Babel                  	 	 | ES6 support using [Babel](https://babeljs.io/).  |
 | Authentication via JsonWebToken                  	 	 | Supports authentication using [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken).  |
-| Code Linting               			 | UPDATE THIS                                                                                              |
+| Code Linting               			 | Uses the airbnb-base style guide with ESLint parsing modern ES6 syntax                                                                                              |
 | Auto server restart                  	 | Restart the server using [nodemon](https://github.com/remy/nodemon) in real-time anytime an edit is made, with babel compilation and eslint.                                                                                                                                                                            |
 | ES6 Code Coverage via [istanbul](https://www.npmjs.com/package/istanbul)                  | Supports code coverage of ES6 code using istanbul and mocha. Code coverage reports are saved in `coverage/` directory post `yarn test` execution. Open `coverage/lcov-report/index.html` to view coverage report. `yarn test` also displays code coverage summary on console. Code coverage can also be enforced overall and per file as well, configured via .istanbul.yml                                                                                                                                                                            |
 | Debugging via [debug](https://www.npmjs.com/package/debug)           | Instead of inserting and deleting console.log you can replace it with the debug function and just leave it there. You can then selectively debug portions of your code by setting DEBUG env variable. If DEBUG env variable is not set, nothing is displayed to the console.                       |
@@ -52,7 +52,7 @@ DEBUG=amida-api-boilerplate:* yarn start
 
 Tests:
 ```sh
-# Run tests written in ES6 
+# Run tests written in ES6
 yarn test
 
 # Run test along with code coverage
