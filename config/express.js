@@ -46,8 +46,11 @@ if (config.env === 'development') {
     }));
 }
 
+// Get API Version from .env (or else assume 1.0)
+const baseUrl = `/api/v${config.apiVersion}`;
+
 // mount all routes on /api path
-app.use('/api', routes);
+app.use(`${baseUrl}`, routes);
 
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {

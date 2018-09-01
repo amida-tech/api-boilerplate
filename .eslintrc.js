@@ -7,6 +7,10 @@ module.exports = {
         "indent": ["error", 4]
     },
     "parserOptions": {
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
     }
 };

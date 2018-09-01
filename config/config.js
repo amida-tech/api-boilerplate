@@ -10,18 +10,32 @@ const envVarsSchema = Joi.object({
         .default('development'),
     PORT: Joi.number()
         .default(4000),
+    API_VERSION: Joi.string()
+        .default('1.0')
+        .description('API Version'),
     JWT_SECRET: Joi.string().required()
         .description('JWT Secret required to sign'),
-    PG_DB: Joi.string().required()
+    UNIQUE_NAME_PG_DB: Joi.string()
+        .default('api')
         .description('Postgres database name'),
-    PG_PORT: Joi.number()
+    UNIQUE_NAME_PG_TEST_DB: Joi.string()
+        .default('api-test')
+        .description('Postgres database for tests'),
+    UNIQUE_NAME_PG_PORT: Joi.number()
         .default(5432),
-    PG_HOST: Joi.string()
+    UNIQUE_NAME_PG_HOST: Joi.string()
         .default('localhost'),
-    PG_USER: Joi.string().required()
+    UNIQUE_NAME_PG_USER: Joi.string().required()
+        .default('postgres')
         .description('Postgres username'),
-    PG_PASSWD: Joi.string().allow('')
+    UNIQUE_NAME_PG_PASSWD: Joi.string().allow('')
+        .default('password')
         .description('Postgres password'),
+    UNIQUE_NAME_PG_SSL: Joi.bool()
+        .default(false)
+        .description('Enable SSL connection to PostgreSQL'),
+    UNIQUE_NAME_PG_CERT_CA: Joi.string()
+        .description('SSL certificate CA'), // Certificate itself, not a filename
 }).unknown()
     .required();
 
@@ -30,16 +44,22 @@ if (error) {
     throw new Error(`Config validation error: ${error.message}`);
 }
 
+// if test, use test database
+const isTestEnvironment = envVars.NODE_ENV === 'test';
+
 const config = {
     env: envVars.NODE_ENV,
     port: envVars.PORT,
+    apiVersion: envVars.API_VERSION,
     jwtSecret: envVars.JWT_SECRET,
     postgres: {
-        db: envVars.PG_DB,
-        port: envVars.PG_PORT,
-        host: envVars.PG_HOST,
-        user: envVars.PG_USER,
-        passwd: envVars.PG_PASSWD,
+        db: isTestEnvironment ? envVars.UNIQUE_NAME_PG_TEST_DB : envVars.UNIQUE_NAME_PG_DB,
+        port: envVars.UNIQUE_NAME_PG_PORT,
+        host: envVars.UNIQUE_NAME_PG_HOST,
+        user: envVars.UNIQUE_NAME_PG_USER,
+        passwd: envVars.UNIQUE_NAME_PG_PASSWD,
+        ssl: envVars.UNIQUE_NAME_PG_SSL,
+        ssl_ca_cert: envVars.UNIQUE_NAME_PG_CERT_CA,
     },
 };
 
