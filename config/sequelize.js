@@ -12,9 +12,6 @@ const sequelizeOptions = {
     dialect: 'postgres',
     port: config.postgres.port,
     host: config.postgres.host,
-    // NOTE: https://github.com/sequelize/sequelize/issues/8417
-    // Codebase shouldn't be using string-based operators, but we still disable them
-    operatorsAliases: false,
     pool: {
         max: 5,
         min: 0,
