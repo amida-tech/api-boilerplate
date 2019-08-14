@@ -2,7 +2,7 @@
     "name": "amida-api-boilerplate",
     "version": "0.2.0",
     "description": "A Boilerplate application for building REST APIs",
-    "author": "Jacob Sachs <jacob@amida-tech.com>",
+    "author": "Alan Thompson <alan@amida.com>",
     "main": "index.js",
     "private": false,
     "engines": {
