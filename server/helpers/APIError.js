@@ -1,3 +1,5 @@
+/* eslint max-classes-per-file: 0 */
+
 import httpStatus from 'http-status';
 
 /**
@@ -20,7 +22,6 @@ class ExtendableError extends Error {
  * @extends ExtendableError
  */
 class APIError extends ExtendableError {
-
     /**
      * Creates an API error.
      * @param {string} message - Error message.

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import config from './config';
+import logger from './winston/get-default-logger';
 
 const db = {};
 
@@ -34,17 +35,17 @@ const sequelize = new Sequelize(
     config.postgres.db,
     config.postgres.user,
     config.postgres.passwd,
-    sequelizeOptions
+    sequelizeOptions,
 );
 
 const modelsDir = path.normalize(`${__dirname}/../server/models`);
 
 // loop through all files in models directory ignoring hidden files and this file
 fs.readdirSync(modelsDir)
-    .filter(file => (file.indexOf('.') !== 0) && (file.indexOf('.map') === -1))
+    .filter((file) => (file.indexOf('.') !== 0) && (file.indexOf('.map') === -1))
     // import model files and save model names
     .forEach((file) => {
-        console.log(`Loading model file ${file}`); // eslint-disable-line no-console
+        logger.info(`Loading model file ${file}`);
         const model = sequelize.import(path.join(modelsDir, file));
         db[model.name] = model;
     });
@@ -53,10 +54,12 @@ fs.readdirSync(modelsDir)
 sequelize
     .sync()
     .then(() => {
-        console.log('Database synchronized'); // eslint-disable-line no-console
+        logger.info('Database synchronized');
     })
     .catch((error) => {
-        if (error) console.log('An error occured %j', error); // eslint-disable-line no-console
+        if (error) {
+            logger.error('An error occured: ', error);
+        }
     });
 
 // assign the sequelize variables to the db object and returning the db.
