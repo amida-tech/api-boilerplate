@@ -20,7 +20,6 @@
         "lint:watch": "yarn lint -- --watch",
         "fix-js": "eslint-auto-fix \"src/**/.js\" \"config/**/.js\" \"config/*.js\"",
         "beautify": "es-beautifier -u -c .eslintrc.js *.js server config",
-        "precommit": "yarn lint && yarn test",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _jest -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
@@ -118,5 +117,10 @@
         "jest-fetch-mock": "2.1.2",
         "jsdom": "15.1.1",
         "validate-commit-msg": "^2.6.1"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "esw *.js server config --color && jest"
+        }
     }
 }
