@@ -1,13 +1,13 @@
 import httpStatus from 'http-status';
 import db from '../../config/sequelize';
 
-const User = db.User;
+const { User } = db;
 
 /**
  * Load user and append to req.
  */
 function load(req, res, next, id) {
-    User.findById(id)
+    User.findOne({ where: { id } })
         .then((user) => {
             if (!user) {
                 const e = new Error('User does not exist');
@@ -17,7 +17,7 @@ function load(req, res, next, id) {
             req.user = user; // eslint-disable-line no-param-reassign
             return next();
         })
-        .catch(e => next(e));
+        .catch((e) => next(e));
 }
 
 /**
@@ -40,8 +40,8 @@ function create(req, res, next) {
     });
 
     user.save()
-        .then(savedUser => res.json(savedUser))
-        .catch(e => next(e));
+        .then((savedUser) => res.json(savedUser))
+        .catch((e) => next(e));
 }
 
 /**
@@ -51,13 +51,13 @@ function create(req, res, next) {
  * @returns {User}
  */
 function update(req, res, next) {
-    const user = req.user;
+    const { user } = req;
     user.username = req.body.username;
     user.mobileNumber = req.body.mobileNumber;
 
     user.save()
-        .then(savedUser => res.json(savedUser))
-        .catch(e => next(e));
+        .then((savedUser) => res.json(savedUser))
+        .catch((e) => next(e));
 }
 
 /**
@@ -69,8 +69,8 @@ function update(req, res, next) {
 function list(req, res, next) {
     const { limit = 50 } = req.query;
     User.findAll({ limit })
-        .then(users => res.json(users))
-        .catch(e => next(e));
+        .then((users) => res.json(users))
+        .catch((e) => next(e));
 }
 
 /**
@@ -78,11 +78,13 @@ function list(req, res, next) {
  * @returns {User}
  */
 function remove(req, res, next) {
-    const user = req.user;
-    const username = req.user.username;
+    const { user } = req;
+    const { username } = req.user;
     user.destroy()
         .then(() => res.json(username))
-        .catch(e => next(e));
+        .catch((e) => next(e));
 }
 
-export default { load, get, create, update, list, remove };
+export default {
+    load, get, create, update, list, remove,
+};

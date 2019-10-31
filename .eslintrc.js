@@ -3,6 +3,7 @@ module.exports = {
     "plugins": [
         "import"
     ],
+    "parser": "babel-eslint",
     "rules": {
         "indent": ["error", 4]
     },
