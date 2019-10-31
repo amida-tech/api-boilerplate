@@ -1,14 +1,25 @@
 /* eslint-env jest */
 
-import request from 'supertest-as-promised';
+import request from 'supertest';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import app from '../../index';
 import config from '../../config/config';
+import db from '../../config/sequelize';
 
 const apiVersionPath = `/api/v${config.apiVersion}`;
 
 describe('## Auth APIs', () => {
+    let testApp;
+
+    beforeAll(() => {
+        testApp = request(app);
+    });
+
+    afterAll((done) => {
+        db.sequelize.close(done);
+    });
+
     const validUserCredentials = {
         username: 'react',
         password: 'express',
@@ -23,7 +34,7 @@ describe('## Auth APIs', () => {
 
     describe(`# POST ${apiVersionPath}/auth/login`, () => {
         test('should return Authentication error', (done) => {
-            request(app)
+            testApp
                 .post(`${apiVersionPath}/auth/login`)
                 .send(invalidUserCredentials)
                 .expect(httpStatus.UNAUTHORIZED)
@@ -35,7 +46,7 @@ describe('## Auth APIs', () => {
         });
 
         test('should get valid JWT token', (done) => {
-            request(app)
+            testApp
                 .post(`${apiVersionPath}/auth/login`)
                 .send(validUserCredentials)
                 .expect(httpStatus.OK)
@@ -54,7 +65,7 @@ describe('## Auth APIs', () => {
 
     describe(`# GET ${apiVersionPath}/auth/random-number`, () => {
         test('should fail to get random number because of missing Authorization', (done) => {
-            request(app)
+            testApp
                 .get(`${apiVersionPath}/auth/random-number`)
                 .expect(httpStatus.UNAUTHORIZED)
                 .then((res) => {
@@ -65,7 +76,7 @@ describe('## Auth APIs', () => {
         });
 
         test('should fail to get random number because of wrong token', (done) => {
-            request(app)
+            testApp
                 .get(`${apiVersionPath}/auth/random-number`)
                 .set('Authorization', 'Bearer inValidToken')
                 .expect(httpStatus.UNAUTHORIZED)
@@ -77,7 +88,7 @@ describe('## Auth APIs', () => {
         });
 
         test('should get a random number', (done) => {
-            request(app)
+            testApp
                 .get(`${apiVersionPath}/auth/random-number`)
                 .set('Authorization', jwtToken)
                 .expect(httpStatus.OK)

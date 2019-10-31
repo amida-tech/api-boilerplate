@@ -1,5 +1,4 @@
 import express from 'express';
-import logger from 'morgan';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compress from 'compression';
@@ -9,16 +8,15 @@ import httpStatus from 'http-status';
 import expressWinston from 'express-winston';
 import expressValidation from 'express-validation';
 import helmet from 'helmet';
-import winstonInstance from './winston';
-import routes from '../server/routes/index.route';
 import config from './config';
+import logger from './winston/get-default-logger';
+import routes from '../server/routes/index.route';
 import APIError from '../server/helpers/APIError';
 
-const app = express();
+// Define default HTTP logger instance (use default logger instance)
+const winstonInstance = logger;
 
-if (config.env === 'development') {
-    app.use(logger('dev'));
-}
+const app = express();
 
 // parse body params and attache them to req.body
 app.use(bodyParser.json());
@@ -33,6 +31,9 @@ app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
+
+// This is really just a test output and should be the first thing you see
+winstonInstance.info('The application is starting...');
 
 // enable detailed API logging in dev env
 if (config.env === 'development') {
@@ -56,10 +57,10 @@ app.use(`${baseUrl}`, routes);
 app.use((err, req, res, next) => {
     if (err instanceof expressValidation.ValidationError) {
         // validation error contains errors which is an array of error each containing message[]
-        const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');
+        const unifiedErrorMessage = err.errors.map((error) => error.messages.join('. ')).join(' and ');
         const error = new APIError(unifiedErrorMessage, err.status, true);
         return next(error);
-    } else if (!(err instanceof APIError)) {
+    } if (!(err instanceof APIError)) {
         const apiError = new APIError(err.message, err.status, err.isPublic);
         return next(apiError);
     }
@@ -80,11 +81,9 @@ if (config.env !== 'test') {
 }
 
 // error handler, send stacktrace only during development
-app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
-    res.status(err.status).json({
-        message: err.isPublic ? err.message : httpStatus[err.status],
-        stack: config.env === 'development' ? err.stack : {},
-    })
-);
+app.use((err, req, res, next) => res.status(err.status).json({ // eslint-disable-line no-unused-vars
+    message: err.isPublic ? err.message : httpStatus[err.status],
+    stack: config.env === 'development' ? err.stack : {},
+}));
 
 export default app;

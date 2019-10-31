@@ -1,32 +1,31 @@
 /* eslint-env jest */
 
-import request from 'supertest-as-promised';
+import request from 'supertest';
 import httpStatus from 'http-status';
-import db from '../../config/sequelize';
 import app from '../../index';
 import config from '../../config/config';
+import db from '../../config/sequelize';
 
 const apiVersionPath = `/api/v${config.apiVersion}`;
 
-/**
- * root level hooks
- */
-beforeAll(() => {
-    db.sequelize.sync();
-});
-
-afterAll(() => {
-    db.sequelize.close();
-});
-
 describe('## User APIs', () => {
+    let testApp;
+
+    beforeAll(() => {
+        testApp = request(app);
+    });
+
+    afterAll((done) => {
+        db.sequelize.close(done);
+    });
+
     let user = {
         username: 'KK123',
     };
 
     describe(`# POST ${apiVersionPath}/users`, () => {
         test('should create a new user', (done) => {
-            request(app)
+            testApp
                 .post(`${apiVersionPath}/users`)
                 .send(user)
                 .expect(httpStatus.OK)
@@ -41,7 +40,7 @@ describe('## User APIs', () => {
 
     describe(`# GET ${apiVersionPath}/users/:userId`, () => {
         test('should get user details', (done) => {
-            request(app)
+            testApp
                 .get(`${apiVersionPath}/users/${user.id}`)
                 .expect(httpStatus.OK)
                 .then((res) => {
@@ -52,7 +51,7 @@ describe('## User APIs', () => {
         });
 
         test('should report error with message - Not found, when user does not exist', (done) => {
-            request(app)
+            testApp
                 .get(`${apiVersionPath}/users/12345`)
                 .expect(httpStatus.NOT_FOUND)
                 .then((res) => {
@@ -66,7 +65,7 @@ describe('## User APIs', () => {
     describe(`# PUT ${apiVersionPath}/users/:userId`, () => {
         test('should update user details', (done) => {
             user.username = 'KK';
-            request(app)
+            testApp
                 .put(`${apiVersionPath}/users/${user.id}`)
                 .send(user)
                 .expect(httpStatus.OK)
@@ -80,7 +79,7 @@ describe('## User APIs', () => {
 
     describe(`# GET ${apiVersionPath}/users/`, () => {
         test('should get all users', (done) => {
-            request(app)
+            testApp
                 .get(`${apiVersionPath}/users`)
                 .expect(httpStatus.OK)
                 .then((res) => {
@@ -91,7 +90,7 @@ describe('## User APIs', () => {
         });
 
         test('should get all users (with limit and skip)', (done) => {
-            request(app)
+            testApp
                 .get(`${apiVersionPath}/users`)
                 .query({ limit: 10, skip: 1 })
                 .expect(httpStatus.OK)
@@ -105,7 +104,7 @@ describe('## User APIs', () => {
 
     describe(`# DELETE ${apiVersionPath}/users/`, () => {
         test('should delete user', (done) => {
-            request(app)
+            testApp
                 .delete(`${apiVersionPath}/users/${user.id}`)
                 .expect(httpStatus.OK)
                 .then((res) => {
