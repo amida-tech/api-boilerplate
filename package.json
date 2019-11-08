@@ -109,7 +109,6 @@
         "gulp-newer": "^1.1.0",
         "gulp-nodemon": "^2.0.6",
         "gulp-sourcemaps": "^2.6.5",
-        "gulp-util": "^3.0.7",
         "husky": "^3.0.3",
         "istanbul": "1.1.0-alpha.1",
         "jest": "24.8.0",
