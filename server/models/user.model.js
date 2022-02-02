@@ -1,19 +1,19 @@
+import { DataTypes } from 'sequelize';
 
 /**
  * User Schema
  */
-module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('User', {
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-        },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-    });
-
-    return User;
+export default {
+  name: 'User',
+  attribute: {
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  }
 };

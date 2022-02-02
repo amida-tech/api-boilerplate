@@ -7,17 +7,17 @@ const { User } = db;
  * Load user and append to req.
  */
 function load(req, res, next, id) {
-    User.findOne({ where: { id } })
-        .then((user) => {
-            if (!user) {
-                const e = new Error('User does not exist');
-                e.status = httpStatus.NOT_FOUND;
-                return next(e);
-            }
-            req.user = user; // eslint-disable-line no-param-reassign
-            return next();
-        })
-        .catch((e) => next(e));
+  User.findOne({ where: { id } })
+    .then((user) => {
+      if (!user) {
+        const e = new Error('User does not exist');
+        e.status = httpStatus.NOT_FOUND;
+        return next(e);
+      }
+      req.user = user; // eslint-disable-line no-param-reassign
+      return next();
+    })
+    .catch((e) => next(e));
 }
 
 /**
@@ -25,7 +25,7 @@ function load(req, res, next, id) {
  * @returns {User}
  */
 function get(req, res) {
-    return res.json(req.user);
+  return res.json(req.user);
 }
 
 /**
@@ -35,13 +35,13 @@ function get(req, res) {
  * @returns {User}
  */
 function create(req, res, next) {
-    const user = User.build({
-        username: req.body.username,
-    });
+  const user = User.build({
+    username: req.body.username,
+  });
 
-    user.save()
-        .then((savedUser) => res.json(savedUser))
-        .catch((e) => next(e));
+  user.save()
+    .then((savedUser) => res.json(savedUser))
+    .catch((e) => next(e));
 }
 
 /**
@@ -51,13 +51,13 @@ function create(req, res, next) {
  * @returns {User}
  */
 function update(req, res, next) {
-    const { user } = req;
-    user.username = req.body.username;
-    user.mobileNumber = req.body.mobileNumber;
+  const { user } = req;
+  user.username = req.body.username;
+  user.mobileNumber = req.body.mobileNumber;
 
-    user.save()
-        .then((savedUser) => res.json(savedUser))
-        .catch((e) => next(e));
+  user.save()
+    .then((savedUser) => res.json(savedUser))
+    .catch((e) => next(e));
 }
 
 /**
@@ -67,10 +67,10 @@ function update(req, res, next) {
  * @returns {User[]}
  */
 function list(req, res, next) {
-    const { limit = 50 } = req.query;
-    User.findAll({ limit })
-        .then((users) => res.json(users))
-        .catch((e) => next(e));
+  const { limit = 50 } = req.query;
+  User.findAll({ limit })
+    .then((users) => res.json(users))
+    .catch((e) => next(e));
 }
 
 /**
@@ -78,13 +78,13 @@ function list(req, res, next) {
  * @returns {User}
  */
 function remove(req, res, next) {
-    const { user } = req;
-    const { username } = req.user;
-    user.destroy()
-        .then(() => res.json(username))
-        .catch((e) => next(e));
+  const { user } = req;
+  const { username } = req.user;
+  user.destroy()
+    .then(() => res.json(username))
+    .catch((e) => next(e));
 }
 
 export default {
-    load, get, create, update, list, remove,
+  load, get, create, update, list, remove,
 };

@@ -2,10 +2,10 @@ import winston from 'winston';
 import { developmentFormatter, productionFormatter } from './winston-formatter';
 
 const {
-    loggers, format, transports,
+  loggers, format, transports,
 } = winston;
 const {
-    printf, timestamp, combine, colorize,
+  printf, timestamp, combine, colorize,
 } = format;
 
 /*
@@ -14,17 +14,17 @@ const {
  * anything in this function.
  */
 const createLoggerWithOptions = (options) => {
-    const loggerOptions = {
-        transports: [
-            new (transports.Console)(),
-        ],
-        level: options.logLevel,
-        format: options.env === 'production'
-            ? combine(timestamp(), productionFormatter(printf))
-            : combine(timestamp(), colorize(), developmentFormatter(printf)),
-    };
-    loggers.add(options.name, loggerOptions);
-    /*
+  const loggerOptions = {
+    transports: [
+      new (transports.Console)(),
+    ],
+    level: options.logLevel,
+    format: options.env === 'production'
+      ? combine(timestamp(), productionFormatter(printf))
+      : combine(timestamp(), colorize(), developmentFormatter(printf)),
+  };
+  loggers.add(options.name, loggerOptions);
+  /*
     * Now you can get your custom configured logger anywhere in the code by either:
     *    import winston from 'winston';
     *    logger = winston.loggers.get('my-custom-logger');
