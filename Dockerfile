@@ -16,6 +16,9 @@ RUN yarn --pure-lockfile
 # copy all file from current dir to /app in container
 COPY . /app/
 
+# Generate the dist dir with the deploy artifacts
+RUN yarn run build
+
 FROM node:16.13.2-alpine3.14
 
 WORKDIR /app
