@@ -66,7 +66,7 @@
     "debug": "^4.3.3",
     "del": "^6.0.0",
     "dotenv": "^15.0.0",
-    "express": "^4.17.2",
+    "express": "^4.18.1",
     "express-jwt": "^6.1.0",
     "express-validation": "^3.0.8",
     "express-winston": "^4.2.0",
