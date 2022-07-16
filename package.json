@@ -81,7 +81,7 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.14.1",
     "supertest": "^6.2.2",
-    "winston": "^3.5.0"
+    "winston": "^3.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.12",
