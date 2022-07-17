@@ -1,4 +1,4 @@
-FROM node:16.13.2-alpine3.14 as builder
+FROM node:16.14-alpine3.14 as builder
 
 # create app directory in container
 RUN mkdir -p /app
@@ -16,7 +16,7 @@ RUN yarn --pure-lockfile
 # copy all file from current dir to /app in container
 COPY . /app/
 
-FROM node:16.13.2-alpine3.14
+FROM node:16.14-alpine3.14
 
 WORKDIR /app
 
