@@ -1,4 +1,4 @@
-FROM node:16.15.0-alpine3.14 as builder
+FROM node:16.18.1-alpine3.16 as builder
 
 # create app directory in container
 RUN mkdir -p /app
@@ -16,7 +16,10 @@ RUN yarn --pure-lockfile
 # copy all file from current dir to /app in container
 COPY . /app/
 
-FROM node:16.15.0-alpine3.14
+# Build the 'dist' directory
+RUN yarn build
+
+FROM node:16.18.1-alpine3.16
 
 WORKDIR /app
 
@@ -27,4 +30,4 @@ COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 4000
 
 # cmd to start service
-CMD [ "node", "dist/index.js"]
+CMD [ "yarn", "start"]
