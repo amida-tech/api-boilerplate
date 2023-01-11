@@ -1,7 +1,6 @@
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import path from 'path';
-import del from 'del';
 
 const plugins = gulpLoadPlugins();
 
@@ -13,9 +12,15 @@ const paths = {
 
 // Clean up dist and coverage directory
 gulp.task('clean', (done) => {
-  del.sync(
-    ['dist/**', 'dist/.*', 'coverage/**', '!dist', '!coverage'],
-  );
+  let deleteSync;
+  import('del')
+    .then((mod) => {
+      deleteSync = mod.deleteSync;
+      deleteSync(
+        ['dist/**', 'dist/.*', 'coverage/**', '!dist', '!coverage'],
+      );
+    })
+    .catch((e) => { console.log(e.message); });
   return done();
 });
 
