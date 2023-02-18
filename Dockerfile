@@ -1,4 +1,4 @@
-FROM node:16.18.1-alpine3.16 as builder
+FROM node:16.19.1-alpine3.16 as builder
 
 # create app directory in container
 RUN mkdir -p /app
@@ -19,7 +19,7 @@ COPY . /app/
 # Build the 'dist' directory
 RUN yarn build
 
-FROM node:16.18.1-alpine3.16
+FROM node:16.19.1-alpine3.16
 
 WORKDIR /app
 
