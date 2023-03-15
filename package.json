@@ -111,7 +111,7 @@
     "jest-fetch-mock": "^3.0.3",
     "jsdom": "^21.0.0",
     "validate-commit-msg": "^2.6.1",
-    "webpack": "5.75.0"
+    "webpack": "5.76.0"
   },
   "husky": {
     "hooks": {
