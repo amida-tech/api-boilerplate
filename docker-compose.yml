@@ -38,7 +38,7 @@ services:
       - amida-db
 
   amida-db:
-    image: "postgres:15.1-alpine3.16"
+    image: "postgres:15.2-alpine3.17"
     ports:
       - "5432:5432"
     environment:

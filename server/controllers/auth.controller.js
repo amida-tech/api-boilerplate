@@ -6,6 +6,7 @@ import config from '../../config/config';
 // sample user, used for authentication
 const user = {
   username: 'react',
+  // deepcode ignore NoHardcodedPasswords: for demostration purposes
   password: 'express',
 };
 

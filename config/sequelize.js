@@ -40,9 +40,10 @@ const modelsDir = path.normalize(`${__dirname}/../server/models`);
 // loop through all files in models directory ignoring hidden files and this file
 fs.readdirSync(modelsDir)
   .filter((file) => (file.indexOf('.') !== 0) && (file.indexOf('.map') === -1))
-// import model files and save model names
+  // import model files and save model names
   .forEach((file) => {
     logger.info(`Loading model file ${file}`);
+    // eslint-disable-next-line import/no-dynamic-require, global-require
     const modelSchema = require(path.join(modelsDir, file)).default;
     const model = sequelize.define(modelSchema.name, modelSchema.attribute);
     db[model.name] = model;
